@@ -1,17 +1,15 @@
 from typing import Dict, List
 
-
 class ImageData:
     """
-    Data structure containing data about the image.
-
-
+    A data structure containing information about the image.
+    
     Attributes:
         teams (List[Dict[str: float | str]]): List of teams in the image.
-        {
+        [{
             "name": "1943",
             "conf": 0.5    
-        }
+        }]
 
         image_path (str): Path to the image.
     """
@@ -21,7 +19,7 @@ class ImageData:
         Initialize the ImageData object.
 
         Args:
-            image_path (str): Path to the image.
+            image_path (str): Path to the target image.
         '''
         self.teams: List[Dict[str: float | str]] = []
         self.image_path = image_path
