@@ -1,5 +1,7 @@
 import torch
 import numpy as np
+from ultralytics import YOLO
+import cv2
 from ultralytics.engine.results import Results
 from typing import Dict, Tuple
 
@@ -44,3 +46,31 @@ def get_team(shirt_model_results: Results) -> Tuple[str, float]:
     team_in_photo_index = shirt_model_results[0].probs.top1
 
     return team_names[team_in_photo_index], round(float(shirt_model_results[0].probs.top1conf), 3)
+
+
+def process_image(image_path: str, clothes_model: YOLO) -> None:
+    """
+    Processes a single image using the provided models.
+    This function loads the image, calls the clothes detection model, and saves the results.
+
+    Args:
+        image_path (str): Path to the image.
+        clothes_model (ultralytics.YOLO): The clothes detection model.
+
+    Returns:
+        None: This function performs processing and may print results.
+    """
+
+    try:
+        image = cv2.imread(image_path)
+
+        if image is None:
+            print(f'Error loading image: {image_path}')
+            return
+
+        clothes_model.predict(image, verbose=True, save_crop=True, classes=[0, 1], conf=0.4)
+
+        print(f'Successfully processed image: {image_path}')
+
+    except Exception as e:
+        print(f'Error processing image: {image_path} - {e}')
