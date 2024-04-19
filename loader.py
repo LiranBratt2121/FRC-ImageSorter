@@ -1,11 +1,10 @@
 import os
 
-
 class FileLoader:
     """
     Loads files/images from a specified input directory and provides paths to output images.
     """
-
+    
     def __init__(self,
                  input_dir="input_images",
                  output_dir="output_images",
@@ -27,7 +26,6 @@ class FileLoader:
             shirt_model_name (str, optional): The name of the shirt model.
                 Defaults to "shirt_detector_yolov8n".
         """
-
         self.input_dir = input_dir
         self.output_dir = output_dir
 
@@ -43,7 +41,6 @@ class FileLoader:
         Raises:
             FileNotFoundError: If the input directory does not exist.
         """
-
         if not os.path.exists(self.input_dir):
             raise FileNotFoundError(
                 f"Input directory not found: {self.input_dir}")
