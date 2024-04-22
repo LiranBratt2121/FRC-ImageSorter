@@ -30,7 +30,7 @@ def to_ROI(img: np.ndarray, roi: np.ndarray) -> np.ndarray:
         np.ndarray: The extracted region of interest.
     """
     x1, y1, x2, y2 = roi
-    return img[int(y1): int(y2), int(x1): int(x2)]
+    return cv2.resize(img[int(y1): int(y2), int(x1): int(x2)], (256, 256))
 
 def get_team(shirt_model_results: Results) -> Tuple[str, float]:
     """
