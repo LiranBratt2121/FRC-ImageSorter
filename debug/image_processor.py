@@ -5,7 +5,7 @@ from utils import process_image
 
 def main():
     loader = FileLoader(clothes_model_name='clothing_model_best_yolov8m.pt',
-                        input_dir='dis2-photos') # Change file for your needs
+                        input_dir='input_images') # Change file for your needs
 
     print(f'Input images: {loader.input_dir}')
 
