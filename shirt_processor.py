@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 import cv2
+
 from loader import FileLoader
 from utils import get_team
 
