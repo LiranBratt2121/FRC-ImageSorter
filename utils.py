@@ -47,6 +47,22 @@ def get_team(shirt_model_results: Results) -> Tuple[str, float]:
 
     return team_names[team_in_photo_index], round(float(shirt_model_results[0].probs.top1conf), 3)
 
+def predict_images(model: YOLO, imgs_path: List[str], classes: List[int], conf: float) -> Generator[Results, None, None]:
+    """
+    Predicts on a list of images using the provided YOLO model.
+
+    Args:
+        model: YOLO model instance.
+        imgs_path: List of image paths.
+        classes: List of class indices to filter detections for.
+        conf: Confidence threshold.
+
+    Yields:
+        Results object for each image in the list.
+    """
+    for img_path in imgs_path:
+        yield model.predict(source=img_path, classes=classes, conf=conf)
+
 
 def process_image(image_path: str, clothes_model: YOLO) -> None:
     """
