@@ -1,0 +1,5 @@
+*pt filter=lfs diff=lfs merge=lfs -text
+models/shirt_model_yolov8x-cls_last.pt filter=lfs diff=lfs merge=lfs -text
+models/shirt_model_yolov8x-cls_best.pt filter=lfs diff=lfs merge=lfs -text
+models/clothing_model_last_yolov8m.pt filter=lfs diff=lfs merge=lfs -text
+models/clothing_model_best_yolov8m.pt filter=lfs diff=lfs merge=lfs -text
