@@ -113,7 +113,7 @@ def predict_images(model: YOLO, imgs_path: List[str], classes: List[int], conf: 
         Results object for each image in the list.
     """
     for img_path in imgs_path:
-        yield model.predict(source=img_path, classes=classes, conf=conf)
+        yield model.predict(source=img_path, classes=classes, conf=conf, verbose=False)
 
 
 def process_image(image_path: str, clothes_model: YOLO) -> None:
