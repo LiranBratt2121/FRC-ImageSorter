@@ -2,9 +2,10 @@ import cv2
 from numpy import ndarray
 import openpyxl
 from openpyxl.drawing.image import Image
+import os
+import shutil
 
 from typing import Dict, List
-
 from dataclasses import dataclass
 
 from utils import to_ROI
@@ -63,8 +64,8 @@ class ImageData:
         other_data (str, optional): Additional information about the shirt. Defaults to None.
         """
         if team_name not in self.teams:
-            self.teams[team_name] = []
-            self.team_occurrences[team_name] = 0
+            self.teams[team_name] = [Shirt(team_name, confidence, roi, year, other_data)]
+            self.team_occurrences[team_name] = 1
             return
 
         self.teams[team_name].append(Shirt(team_name, confidence, roi, year, other_data))
@@ -80,3 +81,68 @@ class ImageData:
         """
         return list(self.teams.keys())
     
+    @staticmethod
+    def to_excel(image_data_list: List, output_filename: str) -> None:
+        """
+        Exports a list of ImageData objects to an Excel spreadsheet.
+
+        Args:
+            image_data_list (List[ImageData]): List of ImageData objects containing image data.
+            output_filename (str): Name of the output Excel file.
+        """
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Image Data"
+        temp_dir = 'temp'
+        
+        # Add temp directory for saved excel images
+        try:
+            os.mkdir(temp_dir)
+        except FileExistsError:
+            shutil.rmtree(temp_dir)
+            os.mkdir(temp_dir)
+            
+        row_index = 1
+        for image_data in image_data_list:
+            # Load the full image
+            full_image = cv2.imread(image_data.image_path)
+            
+            # Write image path
+            ws.cell(row=row_index, column=1).value = "Image Path"
+            ws.cell(row=row_index, column=2).value = image_data.image_path
+            row_index += 1
+            
+            # Write full image
+            full_image_name = f"full_image_{row_index}.png"
+            cv2.imwrite(os.path.join(temp_dir, full_image_name), cv2.resize(full_image, (256, 220)))
+            ws.add_image(Image(os.path.join(temp_dir, full_image_name)), f"B{row_index}")
+            row_index += 12  # Move to the next row after the full image
+            
+            for team_name, shirts in image_data.teams.items():
+                for idx, shirt in enumerate(shirts):
+                    # Write shirt data labels
+                    ws.cell(row=row_index, column=1).value = "Team Name"
+                    ws.cell(row=row_index + 1, column=1).value = "Confidence"
+                    ws.cell(row=row_index + 2, column=1).value = "Year"
+                    ws.cell(row=row_index + 3, column=1).value = "Other Data"
+                    
+                    # Write shirt data values
+                    ws.cell(row=row_index, column=2).value = team_name
+                    ws.cell(row=row_index + 1, column=2).value = shirt.confidence
+                    ws.cell(row=row_index + 2, column=2).value = shirt.year if shirt.year else "N/A"
+                    ws.cell(row=row_index + 3, column=2).value = shirt.other_data if shirt.other_data else "N/A"
+                    
+                    # Extract and write ROIs
+                    roi_image = to_ROI(full_image, shirt.roi)
+                    roi_image_name = f"roi_image_{shirt.team_name}_{idx}.png"
+                    cv2.imwrite(os.path.join(temp_dir, roi_image_name), cv2.resize(roi_image, (128, 64)))
+                    ws.add_image(Image(os.path.join(temp_dir, roi_image_name)), f"C{row_index}")  # Adjust column as needed
+                        
+                    # Move to the next shirt
+                    row_index += 6  # Adjust based on the number of ROIs for each shirt
+            
+            row_index += 1  # Move to the next image
+        
+        wb.save(output_filename)
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        print(f"Excel file saved to {output_filename}")
