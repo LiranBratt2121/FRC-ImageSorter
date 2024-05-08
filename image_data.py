@@ -1,5 +1,5 @@
 import cv2
-from numpy import ndarray
+from numpy import ndarray, random
 import openpyxl
 from openpyxl.drawing.image import Image
 import os
@@ -134,7 +134,7 @@ class ImageData:
                     
                     # Extract and write ROIs
                     roi_image = to_ROI(full_image, shirt.roi)
-                    roi_image_name = f"roi_image_{shirt.team_name}_{idx}.png"
+                    roi_image_name = f"roi_image_{shirt.team_name}_{idx}_{random.rand()}.png"
                     cv2.imwrite(os.path.join(temp_dir, roi_image_name), cv2.resize(roi_image, (128, 64)))
                     ws.add_image(Image(os.path.join(temp_dir, roi_image_name)), f"C{row_index}")  # Adjust column as needed
                         
