@@ -64,11 +64,13 @@ class ImageData:
         other_data (str, optional): Additional information about the shirt. Defaults to None.
         """
         if team_name not in self.teams:
-            self.teams[team_name] = [Shirt(team_name, confidence, roi, year, other_data)]
+            self.teams[team_name] = [
+                Shirt(team_name, confidence, roi, year, other_data)]
             self.team_occurrences[team_name] = 1
             return
 
-        self.teams[team_name].append(Shirt(team_name, confidence, roi, year, other_data))
+        self.teams[team_name].append(
+            Shirt(team_name, confidence, roi, year, other_data))
         self.team_occurrences[team_name] += 1
 
     @property
