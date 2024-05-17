@@ -26,6 +26,6 @@ def authenticate_api(api_lib: str, version: str, scopes: List[str], secret_file_
     credentials = flow.run_local_server(port=port, host=host, redirect_uri_trailing_slash=False)
 
     # Build the service
-    service = build(api_lib, version, credentials=credentials)
-
+    service = build(api_lib, version, credentials=credentials, static_discovery=False)
+    
     return service
